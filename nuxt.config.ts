@@ -34,7 +34,10 @@ export default defineNuxtConfig({
   // guestbook has a place to store messages. We therefore no longer prerender.
   runtimeConfig: {
     sitePassword: process.env.NUXT_SITE_PASSWORD || 'qiushi2026',
-    adminPassword: process.env.NUXT_ADMIN_PASSWORD || 'admin-2006'
+    adminPassword: process.env.NUXT_ADMIN_PASSWORD || 'admin-2006',
+    public: {
+      baseURL: process.env.NUXT_APP_BASE_URL || ''
+    }
   },
 
   devServer: {
