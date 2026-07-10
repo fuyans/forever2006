@@ -1,62 +1,122 @@
-# Nuxt Portfolio Template
+# Class of 2006 — 20-Year Reunion Memorial
 
-[![Nuxt UI](https://img.shields.io/badge/Made%20with-Nuxt%20UI-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com)
+A password-protected memorial site for our middle & high school years (2003–2006),
+built for the 20-year reunion. Features a scroll-animated timeline of milestones
+(with photo/video galleries), a filterable album page, background music, and a
+no-account guestbook.
 
-Use this template to create your own portfolio with [Nuxt UI](https://ui.nuxt.com).
+Built on [Nuxt UI](https://ui.nuxt.com) + [Nuxt Content](https://content.nuxt.com).
 
-- [Live demo](https://portfolio-template.nuxt.dev/)
-- [Documentation](https://ui.nuxt.com/docs/getting-started/installation/nuxt)
-
-<a href="https://portfolio-template.nuxt.dev/" target="_blank">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://ui.nuxt.com/assets/templates/nuxt/portfolio-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://ui.nuxt.com/assets/templates/nuxt/portfolio-light.png">
-    <img alt="Nuxt Portfolio Template" src="https://ui.nuxt.com/assets/templates/nuxt/portfolio-light.png">
-  </picture>
-</a>
-
-## Quick Start
-
-```bash [Terminal]
-npm create nuxt@latest -- -t ui/portfolio
-```
-
-## Deploy your own
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-name=portfolio&repository-url=https%3A%2F%2Fgithub.com%2Fnuxt-ui-templates%2Fportfolio&demo-image=https%3A%2F%2Fui.nuxt.com%2Fassets%2Ftemplates%2Fnuxt%2Fportfolio-dark.png&demo-url=https%3A%2F%2Fportfolio-template.nuxt.dev%2F&demo-title=Nuxt%20Portfolio%20Template&demo-description=A%20sleek%20portfolio%20template%20to%20showcase%20your%20work%2C%20skills%20and%20blog%20powered%20by%20Nuxt%20Content.)
-
-## Setup
-
-Make sure to install the dependencies:
+## Quick start
 
 ```bash
 pnpm install
+cp .env.example .env   # then edit .env to set your passwords
+pnpm dev               # http://localhost:3000
 ```
 
-## Development Server
+The dev server redirects you to `/login`. Enter the `NUXT_SITE_PASSWORD` to enter.
 
-Start the development server on `http://localhost:3000`:
+## Configuration
 
-```bash
-pnpm dev
+All secrets live in `.env` (gitignored):
+
+| Variable | What it does | Default |
+|----------|-------------|---------|
+| `NUXT_SITE_PASSWORD` | Password visitors need to view the site | `class-of-2006` |
+| `NUXT_ADMIN_PASSWORD` | Password for `/admin` (guestbook moderation) | `admin-2006` |
+| `NUXT_PUBLIC_SITE_URL` | Public URL, used for OG image generation | _(empty)_ |
+
+**Change both passwords before launch** and share the site password privately
+with classmates.
+
+## How the site is structured
+
+| Route | Purpose |
+|-------|---------|
+| `/` | Hero + vertical scroll timeline of milestones |
+| `/album` | Every photo & video, filterable by year / type / category |
+| `/guestbook` | Leave and read messages (no account needed) |
+| `/admin` | Moderate guestbook messages (not in the nav) |
+| `/login` | Password gate |
+
+## Adding & editing content
+
+Content lives in [`content/`](./content) and is validated by schemas in
+[`content.config.ts`](./content.config.ts).
+
+### Add a milestone
+
+Create a new YAML file in `content/milestones/`, e.g. `2005-10-festival.yml`:
+
+```yaml
+date: 2005-10-15
+period: "Autumn 2005"
+title: "Autumn Festival"
+description: "The stalls, the snacks, and the rain that didn't stop us."
+category: event          # milestone | event | memory | trip
+cover:
+  src: /photos/festival.jpg
+  alt: "The festival stalls"
+gallery:
+  - type: image
+    src: /photos/festival-1.jpg
+    alt: "Snack stall"
+    caption: "The snack stall that sold out in 20 minutes."
+  - type: video
+    src: https://www.youtube.com/watch?v=XXXXXXXXXXX
+    caption: "The performance"
 ```
+
+Drop the photos into `public/photos/`. See
+[`public/photos/README.md`](./public/photos/README.md) for format tips and
+[`public/music/README.md`](./public/music/README.md) for the background track.
+
+Milestones are ordered by `date` automatically.
+
+## Background music
+
+Place a licensed MP3 at `public/music/background.mp3`. Visitors click the
+floating music button (bottom-right) to play — browsers block autoplay, so it
+never starts on its own. Preference and volume persist across reloads.
+
+## Guestbook
+
+Messages are stored in `.data/messages.json` (auto-created, gitignored). The
+site is already password-gated, so posted messages appear immediately. To
+moderate, visit `/admin` and enter the admin password.
+
+A simple rate limit (one message per 10s per client) and a honeypot field keep
+naive bots out.
+
+## Privacy
+
+- The whole site is behind a password — share it only with classmates.
+- `public/robots.txt` disallows crawling, and pages carry `noindex` meta.
+- Photos show people who were minors in 2003–2006. Be thoughtful about what you
+  publish, and let classmates opt out.
 
 ## Production
 
-Build the application for production:
+This site needs a running server (not static hosting) because of the password
+middleware and guestbook. Deploy to any Node host (Vercel, Netlify Functions,
+a VPS, etc.):
 
 ```bash
 pnpm build
+node .output/server/index.mjs
 ```
 
-Locally preview production build:
+Set the env variables on your host. Make sure `.data/` is writable (for the
+guestbook) — on serverless hosts without a persistent filesystem, swap the
+JSON DB in `server/utils/db.ts` for a real database (e.g. SQLite/Postgres).
 
-```bash
-pnpm preview
-```
+## Scripts
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-
-## Renovate integration
-
-Install [Renovate GitHub app](https://github.com/apps/renovate/installations/select_target) on your repository and you are good to go.
+| Command | Action |
+|---------|--------|
+| `pnpm dev` | Start dev server |
+| `pnpm build` | Build for production |
+| `pnpm preview` | Preview the production build |
+| `pnpm typecheck` | Run TypeScript checks |
+| `pnpm lint` | Lint the codebase |

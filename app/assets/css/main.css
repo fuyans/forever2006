@@ -23,3 +23,73 @@
     background-color: #474747;
   }
 }
+
+/* Homepage timeline — one spine column so the line and dots share a centre. */
+.timeline {
+  --timeline-spine: 2rem;
+  --timeline-gap: 1rem;
+  --timeline-dot-top: 1.5rem;
+  --timeline-dot-size: 0.875rem;
+}
+
+.timeline-row {
+  display: grid;
+  grid-template-columns: var(--timeline-spine) minmax(0, 1fr);
+  column-gap: var(--timeline-gap);
+}
+
+.timeline-spine-col {
+  position: relative;
+  width: var(--timeline-spine);
+}
+
+.timeline-line {
+  position: absolute;
+  left: calc(var(--timeline-spine) / 2);
+  width: 1px;
+  transform: translateX(-50%);
+  background-color: color-mix(in oklab, var(--ui-primary) 35%, transparent);
+  pointer-events: none;
+}
+
+.timeline-dot {
+  top: var(--timeline-dot-top);
+  left: 50%;
+  width: var(--timeline-dot-size);
+  height: var(--timeline-dot-size);
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  background-color: var(--ui-primary);
+  box-shadow: 0 0 0 4px var(--ui-bg);
+}
+
+.timeline-year {
+  margin-left: calc(-1 * var(--timeline-gap));
+  margin-right: calc(-1 * var(--timeline-gap));
+  padding-left: var(--timeline-gap);
+  padding-right: var(--timeline-gap);
+}
+
+.timeline-year-label {
+  display: inline-flex;
+  align-items: baseline;
+  width: fit-content;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background-color: color-mix(in oklab, var(--ui-bg) 80%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Page transition — subtle crossfade + blur between routes. */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(4px);
+}
+

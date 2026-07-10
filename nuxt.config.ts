@@ -14,6 +14,13 @@ export default defineNuxtConfig({
     enabled: true
   },
 
+  app: {
+    pageTransition: {
+      name: 'page',
+      mode: 'out-in'
+    }
+  },
+
   css: ['~/assets/css/main.css'],
 
   content: {
@@ -22,16 +29,18 @@ export default defineNuxtConfig({
     }
   },
 
-  compatibilityDate: '2026-06-30',
-
-  nitro: {
-    prerender: {
-      routes: [
-        '/'
-      ],
-      crawlLinks: true
-    }
+  // The site is password-protected and runs behind a server (SSR) so that the
+  // guestbook has a place to store messages. We therefore no longer prerender.
+  runtimeConfig: {
+    sitePassword: process.env.NUXT_SITE_PASSWORD || 'class-of-2006',
+    adminPassword: process.env.NUXT_ADMIN_PASSWORD || 'admin-2006'
   },
+
+  devServer: {
+    port: 2006
+  },
+
+  compatibilityDate: '2026-06-30',
 
   eslint: {
     config: {

@@ -1,8 +1,10 @@
 import { defineCollection, defineContentConfig, z } from '@nuxt/content'
 
-const createBaseSchema = () => z.object({
-  title: z.string(),
-  description: z.string()
+// Shared, reusable schema fragments -------------------------------------------
+
+const createImageSchema = () => z.object({
+  src: z.string().editor({ input: 'media' }),
+  alt: z.string().optional()
 })
 
 const createButtonSchema = () => z.object({
@@ -15,116 +17,68 @@ const createButtonSchema = () => z.object({
   target: z.enum(['_blank', '_self']).optional()
 })
 
-const createImageSchema = () => z.object({
-  src: z.string().editor({ input: 'media' }),
-  alt: z.string()
-})
-
-const createAuthorSchema = () => z.object({
-  name: z.string(),
-  description: z.string().optional(),
-  username: z.string().optional(),
-  twitter: z.string().optional(),
-  to: z.string().optional(),
-  avatar: createImageSchema().optional()
-})
-
-const createTestimonialSchema = () => z.object({
-  quote: z.string(),
-  author: createAuthorSchema()
-})
-
 export default defineContentConfig({
   collections: {
+    // The landing page hero + intro text.
     index: defineCollection({
       type: 'page',
       source: 'index.yml',
       schema: z.object({
         hero: z.object({
-          links: z.array(createButtonSchema()),
-          images: z.array(createImageSchema())
+          links: z.array(createButtonSchema()).optional(),
+          images: z.array(createImageSchema()).optional()
         }),
-        about: createBaseSchema(),
-        experience: createBaseSchema().extend({
-          items: z.array(z.object({
-            date: z.date(),
-            position: z.string(),
-            company: z.object({
-              name: z.string(),
-              url: z.string(),
-              logo: z.string().editor({ input: 'icon' }),
-              color: z.string()
-            })
-          }))
-        }),
-        testimonials: z.array(createTestimonialSchema()),
-        blog: createBaseSchema(),
-        faq: createBaseSchema().extend({
-          categories: z.array(
-            z.object({
-              title: z.string().nonempty(),
-              questions: z.array(
-                z.object({
-                  label: z.string().nonempty(),
-                  content: z.string().nonempty()
-                })
-              )
-            }))
-        })
+        intro: z.object({
+          title: z.string(),
+          description: z.string()
+        }).optional()
       })
     }),
-    projects: defineCollection({
-      type: 'data',
-      source: 'projects/*.yml',
+
+    // Memories are defined as folders under content/memories/. Each folder is
+    // one timeline event/album. The folder contains an index.md with YAML
+    // frontmatter and image files. Non-programmers can just drop files in.
+    memories: defineCollection({
+      type: 'page',
+      source: 'memories/*/index.md',
       schema: z.object({
         title: z.string().nonempty(),
-        description: z.string().nonempty(),
-        image: z.string().nonempty().editor({ input: 'media' }),
-        url: z.string().nonempty(),
-        tags: z.array(z.string()),
-        date: z.date()
+        period: z.string(),
+        category: z.enum(['milestone', 'event', 'memory', 'trip', 'reunion']).optional()
       })
     }),
-    blog: defineCollection({
+
+    // Page-config collections (title / description / links) for each route,
+    // following the pattern the template already used for projects/blog pages.
+    timeline: defineCollection({
       type: 'page',
-      source: 'blog/*.md',
+      source: 'timeline.yml',
       schema: z.object({
-        minRead: z.number(),
-        date: z.date(),
-        image: z.string().nonempty().editor({ input: 'media' }),
-        author: createAuthorSchema()
+        links: z.array(createButtonSchema()).optional()
       })
     }),
-    pages: defineCollection({
+
+    album: defineCollection({
       type: 'page',
-      source: [
-        { include: 'projects.yml' },
-        { include: 'blog.yml' }
-      ],
+      source: 'album.yml',
       schema: z.object({
-        links: z.array(createButtonSchema())
+        links: z.array(createButtonSchema()).optional()
       })
     }),
-    speaking: defineCollection({
+
+    guestbook: defineCollection({
       type: 'page',
-      source: 'speaking.yml',
+      source: 'guestbook.yml',
       schema: z.object({
-        links: z.array(createButtonSchema()),
-        events: z.array(z.object({
-          category: z.enum(['Live talk', 'Podcast', 'Conference']),
-          title: z.string(),
-          date: z.date(),
-          location: z.string(),
-          url: z.string().optional()
-        }))
+        links: z.array(createButtonSchema()).optional()
       })
     }),
-    about: defineCollection({
+
+    people: defineCollection({
       type: 'page',
-      source: 'about.yml',
+      source: 'people.yml',
       schema: z.object({
-        content: z.object({}),
-        images: z.array(createImageSchema())
+        links: z.array(createButtonSchema()).optional()
       })
     })
   }

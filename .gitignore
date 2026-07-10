@@ -1,6 +1,7 @@
 # Nuxt dev/build outputs
 .output
 .data
+.store
 .nuxt
 .nitro
 .cache
@@ -25,3 +26,4 @@ logs
 
 # VSC
 .history
+.zcode/

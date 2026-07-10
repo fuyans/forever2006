@@ -8,5 +8,8 @@
       <slot />
       <AppFooter />
     </UContainer>
+
+    <!-- Background music control, persists across pages. -->
+    <MusicPlayer />
   </div>
 </template>

@@ -10,35 +10,27 @@ useHead({
     { key: 'theme-color', name: 'theme-color', content: color }
   ],
   link: [
-    { rel: 'icon', href: '/favicon.ico' }
+    { rel: 'icon', href: '/favicon.ico' },
+    // Load the display fonts directly. Nuxt UI registers @nuxt/fonts, but its
+    // generated virtual CSS can come up empty in dev mode; this guarantees the
+    // families are available in both dev and production.
+    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+    { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap'
+    }
   ],
   htmlAttrs: {
-    lang: 'en'
+    lang: 'zh-CN'
   }
 })
 
 useSeoMeta({
-  titleTemplate: '%s - Nuxt Portfolio Template',
-  twitterCard: 'summary_large_image'
+  titleTemplate: '%s — 求实中学东校 2006届一班',
+  // The site is private; discourage indexing.
+  robots: 'noindex, nofollow'
 })
-
-const [{ data: navigation }, { data: files }] = await Promise.all([
-  useAsyncData('navigation', () => {
-    return Promise.all([
-      queryCollectionNavigation('blog')
-    ])
-  }, {
-    transform: data => data.flat()
-  }),
-  useLazyAsyncData('search', () => {
-    return Promise.all([
-      queryCollectionSearchSections('blog')
-    ])
-  }, {
-    server: false,
-    transform: data => data.flat()
-  })
-])
 </script>
 
 <template>
@@ -48,15 +40,5 @@ const [{ data: navigation }, { data: files }] = await Promise.all([
         <NuxtPage />
       </UMain>
     </NuxtLayout>
-
-    <ClientOnly>
-      <LazyUContentSearch
-        :files="files"
-        :navigation="navigation"
-        shortcut="meta_k"
-        :links="navLinks"
-        :fuse="{ resultLimit: 42 }"
-      />
-    </ClientOnly>
   </UApp>
 </template>
