@@ -13,10 +13,12 @@ if (!page.value) {
 // Fetch messages. Refreshable after a new post. During SSR we must forward the
 // incoming request's cookies so the server-middleware auth gate lets the
 // internal $fetch through (otherwise it 401s and we silently render empty).
-const fetchMessages = () => {
-  // useRequestFetch forwards cookies/headers on the server automatically.
-  return $fetch('/api/messages', { headers: import.meta.server ? useRequestHeaders(['cookie']) : {} })
-}
+const fetchMessages = (): Promise<Array<{ id: string, name: string, body: string, createdAt: string, avatarColor: string }>> =>
+  $fetch<Array<{ id: string, name: string, body: string, createdAt: string, avatarColor: string }>>('/api/messages.json')
+    .catch(() => $fetch<Array<{ id: string, name: string, body: string, createdAt: string, avatarColor: string }>>('/api/messages', {
+      headers: import.meta.server ? useRequestHeaders(['cookie']) : {}
+    }))
+    .catch((): Array<{ id: string, name: string, body: string, createdAt: string, avatarColor: string }> => [])
 const { data: messages, refresh } = await useAsyncData('messages', () =>
   fetchMessages().catch(() => [] as Array<{ id: string, name: string, body: string, createdAt: string, avatarColor: string }>)
 )

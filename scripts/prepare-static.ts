@@ -5,7 +5,7 @@
  *
  * Run before `nuxi generate` or `pnpm generate`.
  */
-import { cp, mkdir, writeFile } from 'node:fs/promises'
+import { cp, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { getAllMemories } from '../server/utils/memories'
 
@@ -44,6 +44,24 @@ async function main() {
   await mkdir(API, { recursive: true })
   await writeFile(resolve(API, 'memories.json'), JSON.stringify(data), 'utf8')
   console.log(`  → ${data.length} memories written to public/api/memories.json`)
+
+  // 4. Export people data (if any)
+  const peoplePath = resolve(ROOT, '.store', 'people.json')
+  const peopleRaw = await readFile(peoplePath, 'utf8').catch(() => null)
+  if (peopleRaw) {
+    const people = JSON.parse(peopleRaw).people || []
+    await writeFile(resolve(API, 'people.json'), JSON.stringify(people), 'utf8')
+    console.log(`  → ${people.length} people written to public/api/people.json`)
+  }
+
+  // 5. Export messages data (if any)
+  const msgPath = resolve(ROOT, '.store', 'messages.json')
+  const msgRaw = await readFile(msgPath, 'utf8').catch(() => null)
+  if (msgRaw) {
+    const messages = JSON.parse(msgRaw).messages || []
+    await writeFile(resolve(API, 'messages.json'), JSON.stringify(messages), 'utf8')
+    console.log(`  → ${messages.length} messages written to public/api/messages.json`)
+  }
 }
 
 main().catch((err) => {

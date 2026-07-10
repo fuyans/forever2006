@@ -20,8 +20,12 @@ interface Person {
 }
 
 // Forward cookies on SSR so the auth gate lets the internal fetch through.
-const fetchPeople = () =>
-  $fetch('/api/people', { headers: import.meta.server ? useRequestHeaders(['cookie']) : {} })
+const fetchPeople = (): Promise<Person[]> =>
+  $fetch<Person[]>('/api/people.json')
+    .catch(() => $fetch<Person[]>('/api/people', {
+      headers: import.meta.server ? useRequestHeaders(['cookie']) : {}
+    }))
+    .catch((): Person[] => [])
 
 const { data: people, refresh } = await useAsyncData('people', () =>
   fetchPeople().catch(() => [] as Person[])

@@ -12,8 +12,6 @@ if (!page.value) {
   })
 }
 
-import type { Memory } from '~~/server/utils/memories'
-
 interface AlbumItem extends MediaItem {
   year: number
   category: string

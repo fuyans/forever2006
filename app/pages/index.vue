@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Memory } from '~~/server/utils/memories'
+
 const { data: page } = await useAsyncData('index', () => {
   return queryCollection('index').first()
 })
@@ -9,8 +11,6 @@ if (!page.value) {
     fatal: true
   })
 }
-
-import type { Memory } from '~~/server/utils/memories'
 
 const { data: memories } = await useMemories()
 
