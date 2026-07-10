@@ -1,10 +1,7 @@
 ---
-title: 毕业那天
+title: 毕业后，我们去游泳
 period: 2006年 夏
-category: milestone
-videos:
-  - src: https://www.youtube.com/watch?v=dQw4w9WgXcQ
-    caption: 最后一次走出校门
+category: trip
 ---
 
-抛向空中的帽子、校服上的签名，还有我们说要一辈子保持联系的承诺。
+毕业证还没捂热，一群人就扎进了黄河边的水上乐园。喷泉底下摆着各种造型拍照，好像不把水花折腾起来就不算毕业旅行。

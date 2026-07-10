@@ -1,10 +1,7 @@
 ---
-title: 毕业那天
-period: 2006年 夏
-category: milestone
-videos:
-  - src: https://www.youtube.com/watch?v=dQw4w9WgXcQ
-    caption: 最后一次走出校门
+title: 上海世博会
+period: 2010年 夏
+category: reunion
 ---
 
-抛向空中的帽子、校服上的签名，还有我们说要一辈子保持联系的承诺。
+毕业四年，一伙人凑在了上海世博会。满园的馆排队排到腿软，可凑在一起就是开心。巨大雕塑底下、各国旗帜前，到处都留下了摆造型的合影。

@@ -1,10 +1,7 @@
 ---
-title: 毕业那天
-period: 2006年 夏
-category: milestone
-videos:
-  - src: https://www.youtube.com/watch?v=dQw4w9WgXcQ
-    caption: 最后一次走出校门
+title: 国庆郑州游
+period: 2005年 秋
+category: trip
 ---
 
-抛向空中的帽子、校服上的签名，还有我们说要一辈子保持联系的承诺。
+国庆假期，一整个班坐着火车跑去了郑州。老字号旅馆门口、公园的池塘边，还有夜里亮起红灯笼的古迹前，站没站相地拍了一路的照片。

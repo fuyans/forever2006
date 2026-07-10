@@ -1,10 +1,7 @@
 ---
-title: 毕业那天
-period: 2006年 夏
-category: milestone
-videos:
-  - src: https://www.youtube.com/watch?v=dQw4w9WgXcQ
-    caption: 最后一次走出校门
+title: 毕业前的日子
+period: 2006年 春
+category: memory
 ---
 
-抛向空中的帽子、校服上的签名，还有我们说要一辈子保持联系的承诺。
+举着相机怼自己的脸拍下来，画质糊得像打了马赛克，可谁在乎呢。教室里、路边、还有商场里那个俗气的"甜甜圈"背景板前，都是我们瞎折腾的证据。
