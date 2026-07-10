@@ -76,7 +76,7 @@ defineShortcuts({
         <!-- Image -->
         <img
           v-if="current.type === 'image'"
-          :src="current.src"
+          :src="assetUrl(current.src)"
           :alt="current.alt || current.caption || ''"
           class="max-h-[70vh] w-auto max-w-full object-contain"
         >
@@ -93,8 +93,8 @@ defineShortcuts({
           />
           <video
             v-else
-            :src="current.src"
-            :poster="current.poster"
+            :src="assetUrl(current.src)"
+            :poster="current.poster ? assetUrl(current.poster) : undefined"
             controls
             autoplay
             class="max-h-[70vh] w-auto max-w-full"

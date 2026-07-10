@@ -15,6 +15,10 @@ const DST = resolve(ROOT, 'public', 'memories')
 const API = resolve(ROOT, 'public', 'api')
 
 async function main() {
+  // Accept base URL as CLI arg (e.g. npx tsx prepare-static.ts /forever2006/)
+  const base = process.argv[2] || process.env.NUXT_APP_BASE_URL || ''
+  console.log(`Base URL: ${base || '(none — root deployment)'}`)
+
   // 1. Copy images
   console.log('Copying memories images to public/...')
   await mkdir(DST, { recursive: true })
@@ -24,14 +28,9 @@ async function main() {
   console.log('Generating memories API JSON...')
   const data = await getAllMemories()
 
-  // 3. Prefix absolute paths for subpath deployment (e.g. GitHub Pages)
-  const base = process.env.NUXT_APP_BASE_URL || ''
+  // 3. Prefix absolute paths for subpath deployment (e.g. /forever2006/)
   if (base && base !== '/') {
-    const rewrite = (p: string) => {
-      if (!p) return p
-      if (p.startsWith('http')) return p
-      return base + (p.startsWith('/') ? p.slice(1) : p)
-    }
+    const rewrite = (p: string) => p && !p.startsWith('http') ? base + (p.startsWith('/') ? p.slice(1) : p) : p
     for (const m of data) {
       m.cover = rewrite(m.cover)
       for (const g of m.gallery) {

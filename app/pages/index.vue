@@ -10,25 +10,9 @@ if (!page.value) {
   })
 }
 
-interface Memory {
-  slug: string
-  date: string
-  title: string
-  period: string
-  category: string
-  description: string
-  cover: string
-  gallery: Array<{ type: string, src: string, alt?: string, caption?: string }>
-}
+import type { Memory } from '~~/server/utils/memories'
 
-// Memories from the folder-based structure, served by the memories API.
-const { data: memories } = await useAsyncData<Memory[]>('memories', () => {
-  const base = import.meta.env.BASE_URL ?? '/'
-  // Try static JSON first (exists in static builds), fall back to live API.
-  return $fetch<Memory[]>(`${base}api/memories.json`)
-    .catch(() => useRequestFetch()<Memory[]>('/api/memories'))
-    .catch(() => [] as Memory[])
-})
+const { data: memories } = await useMemories()
 
 interface YearGroup {
   year: number

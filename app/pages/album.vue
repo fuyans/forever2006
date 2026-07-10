@@ -12,16 +12,7 @@ if (!page.value) {
   })
 }
 
-interface Memory {
-  slug: string
-  date: string
-  title: string
-  period: string
-  category: string
-  description: string
-  cover: string
-  gallery: Array<{ type: string, src: string, alt?: string, caption?: string }>
-}
+import type { Memory } from '~~/server/utils/memories'
 
 interface AlbumItem extends MediaItem {
   year: number
@@ -30,13 +21,7 @@ interface AlbumItem extends MediaItem {
   milestonePeriod: string
 }
 
-// Fetch from the folder-based memories API.
-const { data: memories } = await useAsyncData('album-memories', () => {
-  const base = import.meta.env.BASE_URL ?? '/'
-  return $fetch<Memory[]>(`${base}api/memories.json`)
-    .catch(() => useRequestFetch()<Memory[]>('/api/memories'))
-    .catch(() => [] as Memory[])
-})
+const { data: memories } = await useMemories()
 
 const allItems = computed<AlbumItem[]>(() => {
   const out: AlbumItem[] = []
@@ -213,7 +198,7 @@ useSeoMeta({
           <template v-else>
             <img
               v-if="item.poster"
-              :src="item.poster"
+              :src="assetUrl(item.poster)"
               :alt="item.alt || item.milestoneTitle"
               class="w-full object-cover"
             >
