@@ -23,8 +23,9 @@ interface Memory {
 
 // Memories from the folder-based structure, served by the memories API.
 const { data: memories } = await useAsyncData<Memory[]>('memories', () => {
+  const base = useRuntimeConfig().app.baseURL ?? '/'
   // Try static JSON first (exists in static builds), fall back to live API.
-  return $fetch<Memory[]>('/api/memories.json')
+  return $fetch<Memory[]>(`${base}api/memories.json`)
     .catch(() => useRequestFetch()<Memory[]>('/api/memories'))
     .catch(() => [] as Memory[])
 })

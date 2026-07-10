@@ -31,11 +31,12 @@ interface AlbumItem extends MediaItem {
 }
 
 // Fetch from the folder-based memories API.
-const { data: memories } = await useAsyncData('album-memories', () =>
-  $fetch<Memory[]>('/api/memories.json')
+const { data: memories } = await useAsyncData('album-memories', () => {
+  const base = useRuntimeConfig().app.baseURL ?? '/'
+  return $fetch<Memory[]>(`${base}api/memories.json`)
     .catch(() => useRequestFetch()<Memory[]>('/api/memories'))
     .catch(() => [] as Memory[])
-)
+})
 
 const allItems = computed<AlbumItem[]>(() => {
   const out: AlbumItem[] = []
