@@ -5,7 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-    "generate": "npx tsx scripts/prepare-static.ts && npx nuxi generate",
+    "generate": "npx tsx scripts/prepare-static.ts && nuxt prepare && npx nuxi generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",

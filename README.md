@@ -77,21 +77,31 @@ pnpm dev               # http://localhost:2006
 
 ## 生产部署
 
-需要运行中的服务器（密码中间件 + 留言簿 API 需要），不能纯静态托管。
+### 全功能（需要 Node 服务器）
 
 ```bash
 pnpm build
 node .output/server/index.mjs
 ```
 
-在部署平台设置 `.env` 中的环境变量。确保 `.store/` 可写。无状态 serverless 部署（Vercel 等）需将 JSON 存储换为持久数据库。
+在部署平台设置 `.env` 环境变量。确保 `.store/` 可写。
+
+### 静态展示（只读 · GitHub Pages 等）
+
+仅时间线 + 相册 + 音乐，无密码无互动。
+
+```bash
+pnpm generate            # 生成 .output/public/
+npx serve .output/public # 本地预览
+```
 
 ## 脚本
 
 | 命令 | 作用 |
 |------|------|
 | `pnpm dev` | 启动开发服务器 (localhost:2006) |
-| `pnpm build` | 生产构建 |
+| `pnpm build` | 全功能生产构建（SSR） |
+| `pnpm generate` | 静态站点生成（只读） |
 | `pnpm preview` | 预览生产构建 |
 | `pnpm typecheck` | TypeScript 类型检查 |
 | `pnpm lint` | 代码检查 |
