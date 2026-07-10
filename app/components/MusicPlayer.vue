@@ -9,8 +9,10 @@ const playing = ref(false)
 const tracks = ref<string[]>([])
 const current = ref(lastTrack.value)
 
-// Fetch playlist: try live /api/music (SSR/local), fall back to static
-// /api/music.json (GitHub Pages — no server).
+// Fetch playlist client-side only. During prerender (nuxi generate), the
+// server-side fetch would bake unprefixed paths into the page payload, which
+// 404 on GitHub Pages. By setting server:false, the browser always fetches
+// fresh — hitting /api/music on SSR/local, or /api/music.json on static.
 const { data } = await useAsyncData('music-tracks', async () => {
   try {
     return await $fetch<string[]>('/api/music')
@@ -18,7 +20,7 @@ const { data } = await useAsyncData('music-tracks', async () => {
     const base = import.meta.env.BASE_URL ?? '/'
     return $fetch<string[]>(`${base}api/music.json`)
   }
-})
+}, { server: false })
 if (data.value?.length) tracks.value = data.value
 
 const hasPlaylist = computed(() => tracks.value.length > 1)
