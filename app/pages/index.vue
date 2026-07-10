@@ -23,13 +23,10 @@ interface Memory {
 
 // Memories from the folder-based structure, served by the memories API.
 const { data: memories } = await useAsyncData<Memory[]>('memories', () => {
-  // During prerender (static generation), load from the pre-computed JSON.
-  // In normal SSR mode, use the live API.
-  if (import.meta.prerender) {
-    return $fetch<Memory[]>('/api/memories.json').catch(() => [] as Memory[])
-  }
-  const fetcher = useRequestFetch()
-  return fetcher<Memory[]>('/api/memories').catch(() => [] as Memory[])
+  // Try static JSON first (exists in static builds), fall back to live API.
+  return $fetch<Memory[]>('/api/memories.json')
+    .catch(() => useRequestFetch()<Memory[]>('/api/memories'))
+    .catch(() => [] as Memory[])
 })
 
 interface YearGroup {
