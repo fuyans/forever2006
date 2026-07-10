@@ -1,0 +1,51 @@
+# systemd unit file for forever2006 SSR server
+#
+# Install:
+#   sudo cp scripts/forever2006.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable forever2006
+#   sudo systemctl start forever2006
+#
+# Check status:
+#   sudo systemctl status forever2006
+#
+# View logs:
+#   sudo journalctl -u forever2006 -f
+#
+# Reload env vars after editing /home/yan/forever2006/.env:
+#   sudo systemctl restart forever2006
+
+[Unit]
+Description=forever2006 — 中学同学纪念站 (SSR)
+After=network.target
+
+[Service]
+Type=simple
+
+# The user to run as (change to your username)
+User=yan
+Group=yan
+
+# Working directory = the current symlink (updated by deploy-server.sh)
+WorkingDirectory=/home/yan/forever2006/current
+
+# Environment file (NUXT_SITE_PASSWORD, NUXT_ADMIN_PASSWORD, PORT, HOST)
+EnvironmentFile=/home/yan/forever2006/.env
+
+# The server entry point
+ExecStart=/usr/bin/node .output/server/index.mjs
+
+# Auto-restart on crash
+Restart=always
+RestartSec=5
+
+# Memory limit safety (kill if it leaks past 512MB)
+MemoryMax=512M
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=forever2006
+
+[Install]
+WantedBy=multi-user.target

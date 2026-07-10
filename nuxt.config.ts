@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   ],
 
   devtools: {
-    enabled: true
+    enabled: process.env.NODE_ENV !== 'production'
   },
 
   app: {
@@ -55,14 +55,16 @@ export default defineNuxtConfig({
     }
   },
 
-  // Disable Google Fonts providers — @nuxt/fonts (bundled via Nuxt UI) ships
-  // Google as a default provider, which would trigger requests to fonts.googleapis.com.
-  // That domain is unreachable from China and causes ~10s timeouts. We self-host
-  // all fonts via @fontsource instead.
+  // Disable ALL remote font providers — @nuxt/fonts (bundled via Nuxt UI) ships
+  // google, bunny, fontsource, googleicons as available providers. These domains
+  // are unreachable from China and cause ~10s timeouts per request. We self-host
+  // all fonts via @fontsource instead, so only the "local" provider is needed.
   fonts: {
     providers: {
       google: false,
-      googleicons: false
+      googleicons: false,
+      bunny: false,
+      fontsource: false
     }
   },
 

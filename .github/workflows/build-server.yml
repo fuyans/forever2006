@@ -1,0 +1,88 @@
+name: Build SSR Server
+
+# Builds the SSR server output (nuxt build) on GitHub's 7GB runners and
+# publishes it as a GitHub Release so a low-RAM server can download and run
+# the pre-built bundle without building locally.
+#
+# The release is tagged "server-latest" and overwritten on each push to main,
+# giving a stable download URL.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write # needed to create/update releases
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build SSR server
+        run: pnpm build
+        env:
+          # Build without subpath baseURL — the production server serves at root.
+          # Override at runtime if needed.
+          NUXT_APP_BASE_URL: '/'
+
+      - name: Package server bundle
+        run: |
+          # Create a deploy package containing everything the server needs to run.
+          # - .output/           : built Nitro server + client assets
+          # - content/memories/  : runtime-read photos/videos (not bundled by Nitro)
+          # - package.json       : needed for `pnpm install --prod` on the server
+          # - pnpm-workspace.yaml: sharp build-permission config
+          mkdir -p deploy
+          tar -czf deploy/forever2006-server.tar.gz \
+            .output \
+            content/memories \
+            package.json \
+            pnpm-workspace.yaml
+
+      - name: Upload build artifact (90-day retention for debugging)
+        uses: actions/upload-artifact@v4
+        with:
+          name: forever2006-server
+          path: deploy/forever2006-server.tar.gz
+          retention-days: 90
+          overwrite: true
+
+      - name: Publish to GitHub Release (server-latest)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Delete existing release if it exists, then create a fresh one.
+          gh release delete server-latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create server-latest \
+            deploy/forever2006-server.tar.gz \
+            --title "SSR Server Build" \
+            --notes "Pre-built SSR server from commit ${{ github.sha }}.
+
+          ## Deploy
+
+          Run on your server:
+
+          \`\`\`bash
+          curl -sL https://github.com/fuyans/forever2006/releases/download/server-latest/forever2006-server.tar.gz | tar xz
+          pnpm install --prod
+          NUXT_SITE_PASSWORD=xxx NUXT_ADMIN_PASSWORD=xxx PORT=2006 HOST=0.0.0.0 node .output/server/index.mjs
+          \`\`\`
+
+          See \`scripts/deploy-server.sh\` for an automated deploy with data persistence." \
+            --target main
