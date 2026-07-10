@@ -16,6 +16,7 @@ logs
 
 # Misc
 .DS_Store
+AGENTS.md
 .fleet
 .idea
 
