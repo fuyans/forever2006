@@ -42,6 +42,16 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2026-06-30',
 
+  // Static generation for read-only deployments (e.g. GitHub Pages).
+  // The auth middleware skips during prerender, and the memories API is
+  // served as a pre-computed static JSON file.
+  nitro: {
+    prerender: {
+      routes: ['/', '/album'],
+      crawlLinks: false
+    }
+  },
+
   eslint: {
     config: {
       stylistic: {

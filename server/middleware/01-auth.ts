@@ -27,6 +27,9 @@ function isPublic(path: string): boolean {
 }
 
 export default defineEventHandler((event) => {
+  // Skip auth during static generation (prerender).
+  if (import.meta.prerender) return
+
   const path = event.path || event.node?.req?.url || ''
 
   if (isPublic(path)) return

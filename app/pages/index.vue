@@ -23,10 +23,12 @@ interface Memory {
 
 // Memories from the folder-based structure, served by the memories API.
 const { data: memories } = await useAsyncData<Memory[]>('memories', () => {
-  // useRequestFetch forwards the incoming request's cookies during SSR so the
-  // server middleware auth gate lets the internal API call through.
+  // In static/prerender mode, load the pre-computed JSON file.
+  if (import.meta.prerender || !import.meta.server) {
+    return $fetch<Memory[]>('/api/memories.json').catch(() => [] as Memory[])
+  }
   const fetcher = useRequestFetch()
-  return fetcher('/api/memories').catch(() => [] as Memory[])
+  return fetcher<Memory[]>('/api/memories').catch(() => [] as Memory[])
 })
 
 interface YearGroup {
