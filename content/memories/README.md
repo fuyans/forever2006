@@ -85,7 +85,7 @@ category: milestone      # 分类（选填，默认 milestone）
 
 > 注：视频文件比较大，建议压缩后再放（控制在几十 MB 以内）。
 
-### 方式二：YouTube / Bilibili 链接
+### 方式二：Bilibili 链接
 
 在 `index.md` 的 YAML 里加 `videos` 字段：
 
@@ -95,14 +95,13 @@ title: 元旦晚会
 period: 2004年 冬
 category: event
 videos:
-  - src: https://www.youtube.com/watch?v=dQw4w9WgXcQ
-    caption: 才艺表演片段
   - src: https://www.bilibili.com/video/BV1xx411c7mD
-    caption: 另一个视频
+    caption: 才艺表演片段
 ---
 ```
 
-两种方式可以混用。
+> ⚠️ **不要用 YouTube 链接**——YouTube 在国内无法访问，嵌入会一直加载失败。
+> 如需网络视频，请用 Bilibili；本地视频文件（`.mp4`/`.mov`）则始终可用。
 
 ## 完整示例
 
