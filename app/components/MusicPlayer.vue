@@ -13,6 +13,8 @@ const current = ref(lastTrack.value)
 // server-side fetch would bake unprefixed paths into the page payload, which
 // 404 on GitHub Pages. By setting server:false, the browser always fetches
 // fresh — hitting /api/music on SSR/local, or /api/music.json on static.
+// Because server:false means data arrives asynchronously after setup, we
+// watch for its arrival and copy into the reactive tracks array.
 const { data } = await useAsyncData('music-tracks', async () => {
   try {
     return await $fetch<string[]>('/api/music')
@@ -21,7 +23,9 @@ const { data } = await useAsyncData('music-tracks', async () => {
     return $fetch<string[]>(`${base}api/music.json`)
   }
 }, { server: false })
-if (data.value?.length) tracks.value = data.value
+watch(data, (val) => {
+  if (val?.length) tracks.value = val
+}, { immediate: true })
 
 const hasPlaylist = computed(() => tracks.value.length > 1)
 const trackSrc = computed(() => tracks.value[current.value] ?? '')
