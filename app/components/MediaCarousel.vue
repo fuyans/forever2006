@@ -62,7 +62,7 @@ watch(isVisible, (v) => {
         <div class="aspect-video bg-black/5 dark:bg-black/40">
           <img
             v-if="item.type === 'image'"
-            :src="item.src"
+            :src="assetUrl(item.src)"
             :alt="item.alt || item.caption || ''"
             class="h-full w-full object-contain"
           >
@@ -79,8 +79,8 @@ watch(isVisible, (v) => {
             />
             <video
               v-else
-              :src="item.src"
-              :poster="item.poster"
+              :src="assetUrl(item.src)"
+              :poster="item.poster ? assetUrl(item.poster) : undefined"
               muted
               loop
               playsinline

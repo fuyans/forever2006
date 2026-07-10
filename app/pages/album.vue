@@ -205,7 +205,7 @@ useSeoMeta({
         >
           <img
             v-if="item.type === 'image'"
-            :src="item.src"
+            :src="assetUrl(item.src)"
             :alt="item.alt || item.milestoneTitle"
             class="w-full object-cover transition-transform duration-500 group-hover:scale-105"
           >

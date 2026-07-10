@@ -74,7 +74,7 @@ function mark(name: string): string {
     <div class="size-28 rounded-full overflow-hidden ring-4 ring-default shadow-sm mb-4 shrink-0">
       <img
         v-if="person.photo"
-        :src="person.photo"
+        :src="assetUrl(person.photo)"
         :alt="person.name"
         class="w-full h-full object-cover"
       >
