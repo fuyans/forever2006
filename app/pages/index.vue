@@ -23,8 +23,9 @@ interface Memory {
 
 // Memories from the folder-based structure, served by the memories API.
 const { data: memories } = await useAsyncData<Memory[]>('memories', () => {
-  // In static/prerender mode, load the pre-computed JSON file.
-  if (import.meta.prerender || !import.meta.server) {
+  // During prerender (static generation), load from the pre-computed JSON.
+  // In normal SSR mode, use the live API.
+  if (import.meta.prerender) {
     return $fetch<Memory[]>('/api/memories.json').catch(() => [] as Memory[])
   }
   const fetcher = useRequestFetch()
