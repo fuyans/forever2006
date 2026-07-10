@@ -12,6 +12,9 @@ const hasMany = computed(() => props.items.length > 1)
 const container = ref<HTMLElement | null>(null)
 const isVisible = ref(false)
 
+// Click-to-zoom: opens MediaGallery lightbox.
+const galleryOpen = ref<number | null>(null)
+
 onMounted(() => {
   const el = container.value
   if (!el) return
@@ -43,7 +46,7 @@ watch(isVisible, (v) => {
     class="mt-4 rounded-xl overflow-hidden border border-default bg-muted/20"
   >
     <UCarousel
-      v-slot="{ item }"
+      v-slot="{ item, index }"
       :items="items"
       :arrows="hasMany"
       :dots="false"
@@ -59,7 +62,10 @@ watch(isVisible, (v) => {
       }"
     >
       <div class="relative">
-        <div class="aspect-video bg-black/5 dark:bg-black/40">
+        <div
+          class="aspect-video bg-black/5 dark:bg-black/40 group/click cursor-zoom-in"
+          @click="galleryOpen = index"
+        >
           <img
             v-if="item.type === 'image'"
             :src="assetUrl(item.src)"
@@ -97,5 +103,12 @@ watch(isVisible, (v) => {
         </p>
       </div>
     </UCarousel>
+
+    <!-- Click-to-zoom lightbox -->
+    <MediaGallery
+      v-if="items.length"
+      v-model="galleryOpen"
+      :items="items"
+    />
   </div>
 </template>
