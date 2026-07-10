@@ -1,122 +1,97 @@
-# Class of 2006 — 20-Year Reunion Memorial
+# 求实中学东校 · 2006届一班 · 二十周年纪念站
 
-A password-protected memorial site for our middle & high school years (2003–2006),
-built for the 20-year reunion. Features a scroll-animated timeline of milestones
-(with photo/video galleries), a filterable album page, background music, and a
-no-account guestbook.
+密码保护的同学纪念站，记录我们 2003–2006 的初中时光和毕业后的每一次重聚。
+功能包括：时间线、相册、同学录、留言簿、背景音乐。
 
-Built on [Nuxt UI](https://ui.nuxt.com) + [Nuxt Content](https://content.nuxt.com).
+[Nuxt UI](https://ui.nuxt.com) + [Nuxt Content](https://content.nuxt.com) 构建。
 
-## Quick start
+## 快速开始
 
 ```bash
 pnpm install
-cp .env.example .env   # then edit .env to set your passwords
-pnpm dev               # http://localhost:3000
+cp .env.example .env   # 编辑 .env 设置密码
+pnpm dev               # http://localhost:2006
 ```
 
-The dev server redirects you to `/login`. Enter the `NUXT_SITE_PASSWORD` to enter.
+打开后自动跳转到登录页。输入 `NUXT_SITE_PASSWORD` 进入。
 
-## Configuration
+## 配置
 
-All secrets live in `.env` (gitignored):
+所有密钥在 `.env`（git 忽略）：
 
-| Variable | What it does | Default |
-|----------|-------------|---------|
-| `NUXT_SITE_PASSWORD` | Password visitors need to view the site | `class-of-2006` |
-| `NUXT_ADMIN_PASSWORD` | Password for `/admin` (guestbook moderation) | `admin-2006` |
-| `NUXT_PUBLIC_SITE_URL` | Public URL, used for OG image generation | _(empty)_ |
+| 变量 | 作用 | 默认值 |
+|------|------|--------|
+| `NUXT_SITE_PASSWORD` | 进入网站的密码 | `qiushi2026` |
+| `NUXT_ADMIN_PASSWORD` | 管理员密码（管理留言簿 / 编辑同学录） | `admin-2006` |
+| `NUXT_PUBLIC_SITE_URL` | 公共 URL（OG 图片用） | _(空)_ |
 
-**Change both passwords before launch** and share the site password privately
-with classmates.
+**上线前务必改密码**，站内密码只分享给同学。
 
-## How the site is structured
+## 页面结构
 
-| Route | Purpose |
-|-------|---------|
-| `/` | Hero + vertical scroll timeline of milestones |
-| `/album` | Every photo & video, filterable by year / type / category |
-| `/guestbook` | Leave and read messages (no account needed) |
-| `/admin` | Moderate guestbook messages (not in the nav) |
-| `/login` | Password gate |
+| 路由 | 功能 |
+|------|------|
+| `/` | 首页 · 时间线 |
+| `/album` | 相册（按年份 / 类型 / 类别筛选） |
+| `/people` | 同学录（带照片上传） |
+| `/guestbook` | 留言簿（便签墙） |
+| `/admin` | 管理（不在导航中，需管理员密码） |
+| `/login` | 登录 |
 
-## Adding & editing content
+## 添加记忆（无需写代码）
 
-Content lives in [`content/`](./content) and is validated by schemas in
-[`content.config.ts`](./content.config.ts).
+参见 [`content/memories/README.md`](./content/memories/README.md)。
 
-### Add a milestone
+核心操作：在 `content/memories/` 下新建一个 `YYYYMMDD-名称` 文件夹，放入 `index.md` 和照片即可。刷新页面自动显示。
 
-Create a new YAML file in `content/milestones/`, e.g. `2005-10-festival.yml`:
+## 管理员功能
 
-```yaml
-date: 2005-10-15
-period: "Autumn 2005"
-title: "Autumn Festival"
-description: "The stalls, the snacks, and the rain that didn't stop us."
-category: event          # milestone | event | memory | trip
-cover:
-  src: /photos/festival.jpg
-  alt: "The festival stalls"
-gallery:
-  - type: image
-    src: /photos/festival-1.jpg
-    alt: "Snack stall"
-    caption: "The snack stall that sold out in 20 minutes."
-  - type: video
-    src: https://www.youtube.com/watch?v=XXXXXXXXXXX
-    caption: "The performance"
-```
+访问 `/people`（同学录），点击页面底部的「管理员入口」，输入管理员密码解锁后：
 
-Drop the photos into `public/photos/`. See
-[`public/photos/README.md`](./public/photos/README.md) for format tips and
-[`public/music/README.md`](./public/music/README.md) for the background track.
+- 编辑 / 删除任意同学卡片
+- 访问 `/admin` 管理留言簿消息
 
-Milestones are ordered by `date` automatically.
+## 背景音乐
 
-## Background music
+把 `.mp3` 或 `.m4a` 文件放到 `public/music/`。支持多首——播放器自动生成歌单，播完切下一首。见 [`public/music/README.md`](./public/music/README.md)。
 
-Place a licensed MP3 at `public/music/background.mp3`. Visitors click the
-floating music button (bottom-right) to play — browsers block autoplay, so it
-never starts on its own. Preference and volume persist across reloads.
+## 留言簿
 
-## Guestbook
+留言存储在 `.store/messages.json`（自动创建，git 忽略）。站点已密码保护，留言即时显示。防刷机制：每个 IP 每 10 秒一条 + 蜜罐字段。
 
-Messages are stored in `.data/messages.json` (auto-created, gitignored). The
-site is already password-gated, so posted messages appear immediately. To
-moderate, visit `/admin` and enter the admin password.
+## 同学录
 
-A simple rate limit (one message per 10s per client) and a honeypot field keep
-naive bots out.
+同学数据存储在 `.store/people.json`。上传的照片经 sharp 自动压缩为 WebP（800px、80% 质量）。
 
-## Privacy
+## 数据存储
 
-- The whole site is behind a password — share it only with classmates.
-- `public/robots.txt` disallows crawling, and pages carry `noindex` meta.
-- Photos show people who were minors in 2003–2006. Be thoughtful about what you
-  publish, and let classmates opt out.
+- `.data/` — 仅 Nuxt Content 内部使用
+- `.store/` — 留言簿、同学录 JSON 数据（与 Content 分离，避免互相破坏）
+- 上传照片 → `public/uploads/people/`
 
-## Production
+## 隐私
 
-This site needs a running server (not static hosting) because of the password
-middleware and guestbook. Deploy to any Node host (Vercel, Netlify Functions,
-a VPS, etc.):
+- 整站密码保护
+- `robots.txt` 禁止爬虫，页面带 `noindex`
+- 照片中的人当时均未成年——谨慎发布，允许同学要求删除
+
+## 生产部署
+
+需要运行中的服务器（密码中间件 + 留言簿 API 需要），不能纯静态托管。
 
 ```bash
 pnpm build
 node .output/server/index.mjs
 ```
 
-Set the env variables on your host. Make sure `.data/` is writable (for the
-guestbook) — on serverless hosts without a persistent filesystem, swap the
-JSON DB in `server/utils/db.ts` for a real database (e.g. SQLite/Postgres).
+在部署平台设置 `.env` 中的环境变量。确保 `.store/` 可写。无状态 serverless 部署（Vercel 等）需将 JSON 存储换为持久数据库。
 
-## Scripts
+## 脚本
 
-| Command | Action |
-|---------|--------|
-| `pnpm dev` | Start dev server |
-| `pnpm build` | Build for production |
-| `pnpm preview` | Preview the production build |
-| `pnpm typecheck` | Run TypeScript checks |
-| `pnpm lint` | Lint the codebase |
+| 命令 | 作用 |
+|------|------|
+| `pnpm dev` | 启动开发服务器 (localhost:2006) |
+| `pnpm build` | 生产构建 |
+| `pnpm preview` | 预览生产构建 |
+| `pnpm typecheck` | TypeScript 类型检查 |
+| `pnpm lint` | 代码检查 |

@@ -32,7 +32,7 @@ export default defineNuxtConfig({
   // The site is password-protected and runs behind a server (SSR) so that the
   // guestbook has a place to store messages. We therefore no longer prerender.
   runtimeConfig: {
-    sitePassword: process.env.NUXT_SITE_PASSWORD || 'class-of-2006',
+    sitePassword: process.env.NUXT_SITE_PASSWORD || 'qiushi2026',
     adminPassword: process.env.NUXT_ADMIN_PASSWORD || 'admin-2006'
   },
 
