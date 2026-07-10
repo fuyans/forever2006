@@ -2,10 +2,11 @@
  * Prepares a read-only static build by:
  * 1. Copying memories images to public/memories/ so they're statically served
  * 2. Generating public/api/memories.json from the content/memories/ folder
+ * 3. Generating public/api/music.json from the public/music/ folder
  *
  * Run before `nuxi generate` or `pnpm generate`.
  */
-import { cp, mkdir, readFile, writeFile } from 'node:fs/promises'
+import { cp, mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { getAllMemories } from '../server/utils/memories'
 
@@ -62,6 +63,21 @@ async function main() {
     await writeFile(resolve(API, 'messages.json'), JSON.stringify(messages), 'utf8')
     console.log(`  → ${messages.length} messages written to public/api/messages.json`)
   }
+
+  // 6. Export music playlist (mirrors server/api/music.get.ts for static builds)
+  console.log('Generating music playlist JSON...')
+  const musicDir = resolve(ROOT, 'public', 'music')
+  const musicFiles = await readdir(musicDir).catch(() => [] as string[])
+  const musicTracks = musicFiles
+    .filter(f => f.endsWith('.mp3') || f.endsWith('.m4a'))
+    .sort()
+    .map(f => `/music/${f}`)
+  // Prefix with base URL for subpath deployment (e.g. /forever2006/)
+  const musicOut = base && base !== '/'
+    ? musicTracks.map(src => base + (src.startsWith('/') ? src.slice(1) : src))
+    : musicTracks
+  await writeFile(resolve(API, 'music.json'), JSON.stringify(musicOut), 'utf8')
+  console.log(`  → ${musicTracks.length} tracks written to public/api/music.json`)
 }
 
 main().catch((err) => {

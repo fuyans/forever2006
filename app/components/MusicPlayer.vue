@@ -9,10 +9,16 @@ const playing = ref(false)
 const tracks = ref<string[]>([])
 const current = ref(lastTrack.value)
 
-// Fetch playlist from public/music/
-const { data } = await useAsyncData('music-tracks', () =>
-  $fetch('/api/music').catch(() => [] as string[])
-)
+// Fetch playlist: try live /api/music (SSR/local), fall back to static
+// /api/music.json (GitHub Pages — no server).
+const { data } = await useAsyncData('music-tracks', async () => {
+  try {
+    return await $fetch<string[]>('/api/music')
+  } catch {
+    const base = import.meta.env.BASE_URL ?? '/'
+    return $fetch<string[]>(`${base}api/music.json`)
+  }
+})
 if (data.value?.length) tracks.value = data.value
 
 const hasPlaylist = computed(() => tracks.value.length > 1)
