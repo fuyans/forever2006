@@ -55,8 +55,9 @@ const allItems = computed<AlbumItem[]>(() => {
         caption: `${m.title}`
       })
     }
-    // Gallery
+    // Gallery (skip items that duplicate the cover)
     for (const g of m.gallery ?? []) {
+      if (g.src === m.cover) continue
       out.push({
         ...base,
         type: g.type as 'image' | 'video',

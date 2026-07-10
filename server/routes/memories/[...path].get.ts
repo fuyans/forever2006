@@ -36,7 +36,6 @@ export default defineEventHandler(async (event) => {
   try {
     const data = await readFile(filePath)
     setResponseHeader(event, 'Content-Type', contentType)
-    setResponseHeader(event, 'Cache-Control', 'public, max-age=86400')
     return data
   } catch {
     throw createError({ statusCode: 404, statusMessage: 'Not found' })

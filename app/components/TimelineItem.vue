@@ -8,7 +8,7 @@ interface Memory {
   period: string
   category: string
   description: string
-  cover: string
+  cover?: string
   gallery: Array<{ type: string, src: string, alt?: string, caption?: string }>
 }
 
@@ -17,20 +17,28 @@ const props = defineProps<{
 }>()
 
 const mediaItems = computed<MediaItem[]>(() => {
-  const cover: MediaItem = {
-    type: 'image',
-    src: props.milestone.cover,
-    alt: props.milestone.title,
-    caption: props.milestone.title
+  const out: MediaItem[] = []
+  // Only include cover if one exists
+  if (props.milestone.cover) {
+    out.push({
+      type: 'image',
+      src: props.milestone.cover,
+      alt: props.milestone.title,
+      caption: props.milestone.title
+    })
   }
-  const rest: MediaItem[] = (props.milestone.gallery ?? []).map(g => ({
-    type: g.type as 'image' | 'video',
-    src: g.src,
-    alt: g.alt,
-    caption: g.caption,
-    poster: (g as { poster?: string }).poster
-  }))
-  return [cover, ...rest]
+  // Skip gallery items whose src duplicates the cover
+  const rest: MediaItem[] = (props.milestone.gallery ?? [])
+    .filter(g => g.src !== props.milestone.cover)
+    .map(g => ({
+      type: g.type as 'image' | 'video',
+      src: g.src,
+      alt: g.alt,
+      caption: g.caption,
+      poster: (g as { poster?: string }).poster
+    }))
+  out.push(...rest)
+  return out
 })
 </script>
 
@@ -63,7 +71,10 @@ const mediaItems = computed<MediaItem[]>(() => {
         {{ milestone.description }}
       </p>
 
-      <MediaCarousel :items="mediaItems" />
+      <MediaCarousel
+        v-if="mediaItems.length"
+        :items="mediaItems"
+      />
     </article>
   </Motion>
 </template>

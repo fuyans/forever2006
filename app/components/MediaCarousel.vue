@@ -49,16 +49,13 @@ watch(isVisible, (v) => {
       :dots="false"
       :loop="hasMany"
       :wheel-gestures="hasMany"
-      :prev="{ variant: 'solid', color: 'neutral' }"
-      :next="{ variant: 'solid', color: 'neutral' }"
       :ui="{
         root: 'relative',
         viewport: 'overflow-hidden',
         item: 'basis-full min-w-0 ps-0',
         container: 'ms-0',
-        arrows: 'absolute inset-0 flex items-center justify-between px-2 pointer-events-none',
-        prev: 'pointer-events-auto rounded-full bg-black/60 hover:bg-black/80 text-white border-0 disabled:opacity-0',
-        next: 'pointer-events-auto rounded-full bg-black/60 hover:bg-black/80 text-white border-0 disabled:opacity-0'
+        prev: 'bg-black/60 hover:bg-black/80 text-white border-0 disabled:opacity-100',
+        next: 'bg-black/60 hover:bg-black/80 text-white border-0 disabled:opacity-100'
       }"
     >
       <div class="relative">
@@ -67,7 +64,7 @@ watch(isVisible, (v) => {
             v-if="item.type === 'image'"
             :src="item.src"
             :alt="item.alt || item.caption || ''"
-            class="h-full w-full object-cover"
+            class="h-full w-full object-contain"
           >
 
           <template v-else>
