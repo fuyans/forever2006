@@ -24,6 +24,17 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  // Disable Google Fonts providers — @nuxt/fonts (bundled via Nuxt UI) ships
+  // Google as a default provider, which would trigger requests to fonts.googleapis.com.
+  // That domain is unreachable from China and causes ~10s timeouts. We self-host
+  // all fonts via @fontsource instead.
+  fonts: {
+    providers: {
+      google: false,
+      googleicons: false
+    }
+  },
+
   content: {
     experimental: {
       sqliteConnector: 'native'
