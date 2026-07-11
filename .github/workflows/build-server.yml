@@ -41,19 +41,28 @@ jobs:
           # Override at runtime if needed.
           NUXT_APP_BASE_URL: '/'
 
+      - name: Compress memory photos
+        run: node scripts/compress-memories.mjs
+
       - name: Package server bundle
         run: |
           # Create a deploy package containing everything the server needs to run.
-          # - .output/           : built Nitro server + client assets
+          # - .output/           : built Nitro server + client assets (source maps excluded)
           # - content/memories/  : runtime-read photos/videos (not bundled by Nitro)
           # - package.json       : needed for `pnpm install --prod` on the server
           # - pnpm-workspace.yaml: sharp build-permission config
           mkdir -p deploy
+
+          # Exclude source maps to reduce tarball size (~5-10MB savings)
+          find .output -name '*.map' -delete
+
           tar -czf deploy/forever2006-server.tar.gz \
             .output \
             content/memories \
             package.json \
             pnpm-workspace.yaml
+
+          echo "Tarball size: $(du -h deploy/forever2006-server.tar.gz | cut -f1)"
 
       - name: Upload build artifact (90-day retention for debugging)
         uses: actions/upload-artifact@v4

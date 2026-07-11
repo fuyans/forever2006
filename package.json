@@ -6,6 +6,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "npx tsx scripts/prepare-static.ts $NUXT_APP_BASE_URL && nuxt prepare && npx nuxi generate",
+    "compress": "node scripts/compress-memories.mjs",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
